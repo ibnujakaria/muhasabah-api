@@ -45,7 +45,7 @@ class CategoryController extends Controller
     $category = $this->categoryApi->createNew([
       'user_id' =>  $user->id,
       'name'  =>  $request->input('name')
-    ]);
+    ], $request->input('type', null));
 
     $message = "New category successfully created";
 

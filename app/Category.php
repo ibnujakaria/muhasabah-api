@@ -23,4 +23,9 @@ class Category extends Model
     {
       return $this->belongsTo('App\User');
     }
+
+    public function subCategories()
+    {
+      return $this->hasMany('App\SubCategory');
+    }
 }

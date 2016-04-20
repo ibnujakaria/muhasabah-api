@@ -24,6 +24,11 @@ class User extends Authenticatable
     return $this->hasMany('App\Category');
   }
 
+  public function records()
+  {
+    return $this->hasMany('App\Record');
+  }
+
   public function scopeGoogleId($query, $id)
   {
     return $query->where('google_id', $id);
