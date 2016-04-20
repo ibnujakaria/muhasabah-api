@@ -4,69 +4,50 @@ namespace App\Http\Controllers\Auth;
 
 use App\User;
 use Validator;
+use App\Api\UserApi;
+use Illuminate\Http\Request;
+use App\Libraries\GoogleJWTDecoder;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 class AuthController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Registration & Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users, as well as the
-    | authentication of existing users. By default, this controller uses
-    | a simple trait to add these behaviors. Why don't you explore it?
-    |
-    */
 
-    use AuthenticatesAndRegistersUsers, ThrottlesLogins;
+  private $userApi;
 
-    /**
-     * Where to redirect users after login / registration.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/';
+  public function __construct(UserApi $userApi)
+  {
+    $this->userApi = $userApi;
+  }
 
-    /**
-     * Create a new authentication controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
+  /**
+  * this function should get the google JWTAuth
+  * then parse it. Get the google-id, email, and name.
+  * then search it on our users table, and store them if they dont exist
+  */
+  public function authenticate(Request $request, GoogleJWTDecoder $googleJwtDecoder)
+  {
+    $googleIdToken = $request->input('google-id-token');
+
+    # check for the google id token whether its valid or not
+    # if valid, it will return the user public data
+    $result = $googleJwtDecoder->getUserPublicData($googleIdToken);
+
+    if (!$result) {
+      return response()->json([
+        'error' =>  'token is invalid'
+      ], 401);
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data)
-    {
-        return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
-        ]);
+    # if the token is found, search to our internal database whether the user
+    # is already registered or not.
+    if (!$user = $this->userApi->getByGoogleId($result->google_id)) {
+      # if not registered, then register it.
+      $user = $this->userApi->newUser((array) $result);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return User
-     */
-    protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-        ]);
-    }
+    # generate the new JWT token for this user (this is our own jwt, not belongs to google anymore)
+    $token = \JWTAuth::fromUser($user);
+
+    return response()->json(compact('user', 'token'));
+  }
 }

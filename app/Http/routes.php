@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::group(['prefix' => 'api'], function(){
+  Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function(){
+    Route::post('authenticate', 'AuthController@authenticate');
+  });
 });
