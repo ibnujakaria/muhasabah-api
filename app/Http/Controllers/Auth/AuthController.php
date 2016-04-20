@@ -17,6 +17,9 @@ class AuthController extends Controller
   public function __construct(UserApi $userApi)
   {
     $this->userApi = $userApi;
+
+    # setting up the middleware of this controller
+    $this->middleware('jwt.auth', ['only' => ['getUser']]);
   }
 
   /**
@@ -49,5 +52,13 @@ class AuthController extends Controller
     $token = \JWTAuth::fromUser($user);
 
     return response()->json(compact('user', 'token'));
+  }
+
+  public function getUser()
+  {
+    # this will get the user data
+    $user = \JWTAuth::parseToken()->authenticate();
+
+    return response()->json(compact('user'));
   }
 }

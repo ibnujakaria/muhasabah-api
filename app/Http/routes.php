@@ -14,5 +14,10 @@
 Route::group(['prefix' => 'api'], function(){
   Route::group(['prefix' => 'auth', 'namespace' => 'Auth'], function(){
     Route::post('authenticate', 'AuthController@authenticate');
+    Route::post('get-user', 'AuthController@getUser');
+  });
+
+  Route::group(['prefix' => 'categories', 'namespace' => 'Category'], function(){
+    Route::get('/', 'CategoryController@getCategories');
   });
 });
