@@ -3,6 +3,7 @@ namespace App\Api;
 
 use App\Record;
 use App\Category;
+use App\SubCategory;
 
 class CategoryApi
 {
@@ -48,6 +49,52 @@ class CategoryApi
     }
 
     return $category;
+  }
+
+  public function getById($id)
+  {
+    $category = Category::find($id);
+
+    # do this category is the parent? Or it has a subCategories
+    # check it from the table record!
+    # but, surely, we have it configured on the model, just do the checking
+    if (!$category->has_sub_category) {
+      # attach the sub categories to the result
+      $category->subCategories;
+    }
+    else {
+      # otherwise, attach the $record to category result
+      $category->record = $record; # :)
+    }
+
+    return $category;
+  }
+
+  /**
+  * @param $category | instance of \App\Category
+  * @param $values | array
+  * @param $values | string -> the type of record (counter or checkers)
+  */
+  public function newSub($category, array $values, $type)
+  {
+    # just make me more confident
+    $values = (object) $values;
+    # ignore everything. Just put the values to the sub categories table
+    # dramatically
+    $subCategory = new SubCategory;
+    $subCategory->category_id = $category->id;
+    $subCategory->name = $values->name;
+    $subCategory->save();
+
+    # create the new record with the $type value
+    $record = new Record;
+    $record->user_id = $category->user_id;
+    $record->category_id = $category->id;
+    $record->sub_category_id = $subCategory->id;
+    $record->type = $type;
+    $record->save();
+
+    return $subCategory;
   }
 
   public function destroy($id)

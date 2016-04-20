@@ -19,6 +19,10 @@ class Category extends Model
       'user_id', 'created_at', 'updated_at'
     ];
 
+    protected $appends = [
+      'has_sub_category'
+    ];
+
     public function user()
     {
       return $this->belongsTo('App\User');
@@ -27,5 +31,10 @@ class Category extends Model
     public function subCategories()
     {
       return $this->hasMany('App\SubCategory');
+    }
+
+    public function getHasSubCategoryAttribute()
+    {
+      return $record = Record::with('recordData')->where('category_id', $this->id)->whereNull('sub_category_id')->count() < 1;
     }
 }

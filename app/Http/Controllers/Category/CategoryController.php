@@ -31,7 +31,8 @@ class CategoryController extends Controller
   public function storeCategory(Request $request)
   {
     $validator = \Validator::make($request->all(), [
-      'name'  =>  'required|max:255'
+      'name'  =>  'required|max:255',
+      'type'  =>  'in:counter,checker'
     ]);
 
     if ($validator->fails()) {
@@ -50,6 +51,13 @@ class CategoryController extends Controller
     $message = "New category successfully created";
 
     return response()->json(compact('category', 'message'));
+  }
+
+  public function show ($id)
+  {
+    $category = $this->categoryApi->getById($id);
+
+    return response()->json(compact('category'));
   }
 
   public function destroy($id)
