@@ -18,7 +18,7 @@ class CategoryController extends Controller
     $this->categoryApi = $categoryApi;
 
     # setting up the middleware
-    $this->middleware('jwt.auth');
+    $this->middleware(['jwt.auth', 'jwt.refresh']);
   }
 
   public function getCategories()
@@ -50,5 +50,16 @@ class CategoryController extends Controller
     $message = "New category successfully created";
 
     return response()->json(compact('category', 'message'));
+  }
+
+  public function destroy($id)
+  {
+    if (!$this->categoryApi->destroy($id)){
+      return $this->somethingWentWrong(); # check the parent controller
+    }
+
+    $message = "Category destroyed";
+
+    return response()->json(compact('message'));
   }
 }

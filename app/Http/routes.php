@@ -20,5 +20,6 @@ Route::group(['prefix' => 'api'], function(){
   Route::group(['prefix' => 'categories', 'namespace' => 'Category'], function(){
     Route::get('/', 'CategoryController@getCategories');
     Route::post('/new', 'CategoryController@storeCategory');
+    Route::delete('/{category}', 'CategoryController@destroy');
   });
 });

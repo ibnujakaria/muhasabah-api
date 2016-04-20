@@ -8,7 +8,7 @@ class CategoryApi
 
   public function getCategories()
   {
-    return \Auth::user()->categories;
+    return \JWTAuth::parseToken()->authenticate()->categories;
   }
 
   public function createNew(array $values)
@@ -22,5 +22,16 @@ class CategoryApi
     $category->save();
 
     return $category;
+  }
+
+  public function destroy($id)
+  {
+    $category = \JWTAuth::parseToken()->authenticate()->categories()->find($id);
+
+    if ($category) {
+      return $category->delete();
+    }
+
+    return false;
   }
 }
