@@ -102,11 +102,12 @@ class CategoryApi
     $subCategory = $this->getById($category_id)->subCategories()->find($sub_category_id);
 
     # attach the records of this sub category
-    $subCategory->records = Record::with('recordData')->subCategory($category_id, $sub_category_id)->get();
+    $subCategory->record = Record::with('recordData')->subCategory($category_id, $sub_category_id)->first();
 
     return $subCategory;
   }
 
+  # destroy the category
   public function destroy($id)
   {
     $category = \JWTAuth::parseToken()->authenticate()->categories()->find($id);
@@ -123,6 +124,23 @@ class CategoryApi
       }
 
       return $category->delete();
+    }
+
+    return false;
+  }
+
+  # destroy sub categories
+  public function destroySub($category_id, $sub_category_id)
+  {
+    $subCategory = $this->getSubCategory($category_id, $sub_category_id);
+
+    if ($subCategory) {
+      # delete the record data at first
+      $subCategory->record->recordData()->delete();
+      # delete the record data
+      $subCategory->record->delete();
+      # then delete the sub category
+      return $subCategory->delete();
     }
 
     return false;

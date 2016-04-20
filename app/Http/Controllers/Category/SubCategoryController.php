@@ -69,4 +69,14 @@ class SubCategoryController extends Controller
 
     return response()->json(compact('subCategory'));
   }
+
+  public function destroy($category_id, $sub_category_id)
+  {
+    if ($this->categoryApi->destroySub($category_id, $sub_category_id)) {
+      return response()->json([
+        'message' =>  'The sub category destroyed'
+      ]);
+    }
+    $this->somethingWentWrong();
+  }
 }
