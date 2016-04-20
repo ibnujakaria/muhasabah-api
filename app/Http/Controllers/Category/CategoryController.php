@@ -28,4 +28,27 @@ class CategoryController extends Controller
     return response()->json(compact('categories'));
   }
 
+  public function storeCategory(Request $request)
+  {
+    $validator = \Validator::make($request->all(), [
+      'name'  =>  'required|max:255'
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json(['errors' => $validator->errors()], 500);
+    }
+
+    # if the form-data is valid
+    $user = \JWTAuth::parseToken()->authenticate();
+
+    # create new category
+    $category = $this->categoryApi->createNew([
+      'user_id' =>  $user->id,
+      'name'  =>  $request->input('name')
+    ]);
+
+    $message = "New category successfully created";
+
+    return response()->json(compact('category', 'message'));
+  }
 }

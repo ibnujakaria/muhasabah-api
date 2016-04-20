@@ -14,7 +14,7 @@ class ExampleTest extends TestCase
     public function testBasicExample()
     {
       /**
-      * eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdCIsImlhdCI6MTQ2MTExODMzNCwiZXhwIjoxNDYzNTM3NTM0LCJuYmYiOjE0NjExMTgzMzQsImp0aSI6Ijk0ZjdiYzI1MmJiZjYxZjA2N2QzNTNjNzcwODQwZjc0In0.Ue3PMTIDeVQBJZW0W5Z7g7EUdy8A5KrqjLHOFcY79UA
+      * eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImlzcyI6Imh0dHA6XC9cL2xvY2FsaG9zdCIsImlhdCI6MTQ2MTEyMDA4MSwiZXhwIjoxNDYzNTM5MjgxLCJuYmYiOjE0NjExMjAwODEsImp0aSI6ImI3MzRlMDY0NGRjZGRjNWFhY2Y0YmM2OTEwYWQyZmY5In0.8v4wWUrmD00dOVDuiJBsPa509zXx9fTSGZLd0QB1pUA
       */
       $user = \App\User::first();
 
