@@ -30,4 +30,9 @@ Route::group(['prefix' => 'api'], function(){
       Route::delete('/{sub_category}', 'SubCategoryController@destroy');
     });
   });
+
+  Route::group(['prefix' => 'records', 'namespace' => 'Record'], function() {
+    Route::get('{record}', 'RecordController@show');
+    Route::post('{record}/add', 'RecordController@assignValue');
+  });
 });
