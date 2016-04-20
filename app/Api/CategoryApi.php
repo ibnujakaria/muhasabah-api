@@ -53,18 +53,18 @@ class CategoryApi
 
   public function getById($id)
   {
-    $category = Category::find($id);
+    $category = \JWTAuth::parseToken()->authenticate()->categories()->find($id);
 
     # do this category is the parent? Or it has a subCategories
     # check it from the table record!
     # but, surely, we have it configured on the model, just do the checking
-    if (!$category->has_sub_category) {
+    if ($category->has_sub_category) {
       # attach the sub categories to the result
       $category->subCategories;
     }
     else {
       # otherwise, attach the $record to category result
-      $category->record = $record; # :)
+      $category->record = Record::category($category->id)->whereNull('sub_category_id')->get(); # :)
     }
 
     return $category;
@@ -93,6 +93,16 @@ class CategoryApi
     $record->sub_category_id = $subCategory->id;
     $record->type = $type;
     $record->save();
+
+    return $subCategory;
+  }
+
+  public function getSubCategory($category_id, $sub_category_id)
+  {
+    $subCategory = $this->getById($category_id)->subCategories()->find($sub_category_id);
+
+    # attach the records of this sub category
+    $subCategory->records = Record::with('recordData')->subCategory($category_id, $sub_category_id)->get();
 
     return $subCategory;
   }

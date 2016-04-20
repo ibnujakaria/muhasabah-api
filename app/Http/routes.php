@@ -24,7 +24,9 @@ Route::group(['prefix' => 'api'], function(){
     Route::get('/{category}', 'CategoryController@show');
 
     Route::group(['prefix' => '{category}/sub-categories'], function(){
+      Route::get('/', 'SubCategoryController@index');
       Route::post('/new', 'SubCategoryController@store');
+      Route::get('/{sub_category}', 'SubCategoryController@show');
     });
   });
 });

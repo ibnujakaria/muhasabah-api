@@ -21,6 +21,11 @@ class SubCategoryController extends Controller
     $this->middleware('jwt.refresh');
   }
 
+  public function index($category_id)
+  {
+    $category = $this->categoryApi->getById($category_id);
+  }
+
   public function store(Request $request, Category $category)
   {
     # make sure that the category doesn't has sub
@@ -53,5 +58,15 @@ class SubCategoryController extends Controller
     $this->categoryApi->newSub($category, [
       'name'  => $request->input('name')
     ], $request->input('type'));
+
+    return response()->json(['message' => 'New Sub Category has successfully created']);
+  }
+
+  public function show($category_id, $sub_category_id)
+  {
+    # get sub category
+    $subCategory = $this->categoryApi->getSubCategory($category_id, $sub_category_id);
+
+    return response()->json(compact('subCategory'));
   }
 }
