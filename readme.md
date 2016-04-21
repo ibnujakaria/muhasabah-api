@@ -1,26 +1,17 @@
-# Laravel PHP Framework
+## Muhasabah API
 
-[![Build Status](https://travis-ci.org/laravel/framework.svg)](https://travis-ci.org/laravel/framework)
-[![Total Downloads](https://poser.pugx.org/laravel/framework/d/total.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/framework/v/stable.svg)](https://packagist.org/packages/laravel/framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/framework/v/unstable.svg)](https://packagist.org/packages/laravel/framework)
-[![License](https://poser.pugx.org/laravel/framework/license.svg)](https://packagist.org/packages/laravel/framework)
+This project is the backend or the server side of this [primary project](https://github.com/basithdjunaedi/MuhasabahApps)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as authentication, routing, sessions, queueing, and caching.
+To make sure the android project works. You must install this project and running the server in the same network as your client app. Before installing this project, make sure your computer environment matches this [laravel requirements](https://laravel.com/docs/5.2/installation#server-requirements)
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb inversion of control container, expressive migration system, and tightly integrated unit testing support give you the tools you need to build any application with which you are tasked.
+If you have installed the server requirements, then its time to install this project!
 
-## Official Documentation
-
-Documentation for the framework can be found on the [Laravel website](http://laravel.com/docs).
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+- run `git clone https://github.com/ibnujakaria/muhasabah-api.git` on your command line
+- cd muhasabah-api
+- run `composer update`. Wait? Have you installed composer? If no, check [this](https://getcomposer.org/download/) out to install composer
+- if everything works good, move to the public directory by running `cd public`
+- Now, start your php server at the ip in your network (check your ifconfig), by running `php -S your-ip-address:8080`
+- Open your android app, on the API class, change the API_BASE_URL to your ip address
 
 ## License
 
