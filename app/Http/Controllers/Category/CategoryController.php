@@ -32,7 +32,8 @@ class CategoryController extends Controller
   {
     $validator = \Validator::make($request->all(), [
       'name'  =>  'required|max:255',
-      'type'  =>  'in:counter,checker'
+      'records.*.type'  =>  'in:counter,checker',
+      'records.*.name'  =>  'max:255'
     ]);
 
     if ($validator->fails()) {
@@ -42,11 +43,14 @@ class CategoryController extends Controller
     # if the form-data is valid
     $user = \JWTAuth::parseToken()->authenticate();
 
+    # get the records from user input
+    $records = $request->input('records', null);
+
     # create new category
     $category = $this->categoryApi->createNew([
       'user_id' =>  $user->id,
       'name'  =>  $request->input('name')
-    ], $request->input('type', null));
+    ], $records);
 
     $message = "New category successfully created";
 

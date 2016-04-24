@@ -21,12 +21,12 @@ class CategoryApi
   * The first method, contains the values of the new row of categories table
   * and the second is $type, which has a default value null
   *
-  * if the $type equals to null, then we need to store only new category
+  * if the $records equals to null, then we need to store only new category
   * it means that this category will contains another sub category
-  * but if the $type is not null, this means we need to store new row of records table,
-  * and assign the type as the $type passed by the user
+  * but if the $records is not null, this means we need to store new row of records table,
+  * as the records values
   **/
-  public function createNew(array $values, $type = null)
+  public function createNew(array $values, $records = null)
   {
     # this is just for confinience
     $values = (object) $values;
@@ -37,15 +37,20 @@ class CategoryApi
     $category->save();
 
     # if the $type is not null
-    if ($type) {
-      # then create new record in records table
-      $record = new Record;
-      $record->user_id = $values->user_id;
-      $record->category_id = $category->id;
-      # we left the sub_category_id as null because this category will never
-      # contains sub categories
-      $record->type = $type;
-      $record->save();
+    if ($records) {
+      # do a looping to the array and save it one by one
+      foreach ($records as $key => $value) {
+        $value = (object) $value;
+        # then create new record in records table
+        $record = new Record;
+        $record->user_id = $values->user_id;
+        $record->category_id = $category->id;
+        $record->name = $value->name;
+        # we left the sub_category_id as null because this category will never
+        # contains sub categories
+        $record->type = $value->type;
+        $record->save();
+      }
     }
 
     return $category;
@@ -64,7 +69,7 @@ class CategoryApi
     }
     else {
       # otherwise, attach the $record to category result
-      $category->record = Record::category($category->id)->whereNull('sub_category_id')->get(); # :)
+      $category->records = Record::category($category->id)->whereNull('sub_category_id')->get(); # :)
     }
 
     return $category;
