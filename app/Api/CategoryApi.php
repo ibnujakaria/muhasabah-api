@@ -80,7 +80,7 @@ class CategoryApi
   * @param $values | array
   * @param $values | string -> the type of record (counter or checkers)
   */
-  public function newSub($category, array $values, $type)
+  public function newSub($category, array $values, array $records)
   {
     # just make me more confident
     $values = (object) $values;
@@ -91,23 +91,44 @@ class CategoryApi
     $subCategory->name = $values->name;
     $subCategory->save();
 
-    # create the new record with the $type value
-    $record = new Record;
-    $record->user_id = $category->user_id;
-    $record->category_id = $category->id;
-    $record->sub_category_id = $subCategory->id;
-    $record->type = $type;
-    $record->save();
+    # store the records
+    $this->addRecordsToSubCategory($category, $subCategory, $records);
 
     return $subCategory;
+  }
+
+  public function addRecordsToSubCategory($category, $subCategory, array $records)
+  {
+    if (!$category->has_sub_category) {
+      return false;
+    }
+
+    # do a looping to the array and save it one by one
+    foreach ($records as $key => $value) {
+      $value = (object) $value;
+      # then create new record in records table
+      $record = new Record;
+      $record->user_id = $category->user_id;
+      $record->category_id = $category->id;
+      $record->sub_category_id = $subCategory->id;
+      $record->name = $value->name;
+      $record->type = $value->type;
+      $record->save();
+    }
+
+    return true;
   }
 
   public function getSubCategory($category_id, $sub_category_id)
   {
     $subCategory = $this->getById($category_id)->subCategories()->find($sub_category_id);
 
+    if (!$subCategory) {
+      return null;
+    }
+
     # attach the records of this sub category
-    $subCategory->record = Record::with('recordData')->subCategory($category_id, $sub_category_id)->first();
+    $subCategory->records = Record::with('recordData')->subCategory($category_id, $sub_category_id)->get();
 
     return $subCategory;
   }
