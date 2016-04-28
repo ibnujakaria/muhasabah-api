@@ -97,6 +97,27 @@ class CategoryApi
     return $subCategory;
   }
 
+  public function addRecordsToCategory($category, array $records)
+  {
+    if ($category->has_sub_category) {
+      return false;
+    }
+
+    # do a looping to the array and save it one by one
+    foreach ($records as $key => $value) {
+      $value = (object) $value;
+      # then create new record in records table
+      $record = new Record;
+      $record->user_id = $category->user_id;
+      $record->category_id = $category->id;
+      $record->name = $value->name;
+      $record->type = $value->type;
+      $record->save();
+    }
+
+    return true;
+  }
+
   public function addRecordsToSubCategory($category, $subCategory, array $records)
   {
     if (!$category->has_sub_category) {

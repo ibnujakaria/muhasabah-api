@@ -57,6 +57,41 @@ class CategoryController extends Controller
     return response()->json(compact('category', 'message'));
   }
 
+  public function addRecords(Request $request, $category_id)
+  {
+    $category = $this->categoryApi->getById($category_id);
+    # make sure that the category doesn't has sub
+    if ($category->has_sub_category) {
+      # if does, kill it!
+      return $this->somethingWentWrong();
+    }
+
+    # make sure the category is belongs to the authenticated user
+    if ($category->user_id === \JWTAuth::parseToken()->authenticate()->id) {
+      return $this->somethingWentWrong();
+    }
+
+    # we need to validate the form data at first
+    $validator = \Validator::make($request->all(), [
+      'records' => 'required|array',
+      'records.*' => 'required|array',
+      'records.*.type'  =>  'required|in:counter,checker',
+      'records.*.name'  =>  'required|max:255'
+    ]);
+
+    # if the validation fails
+    if ($validator->fails()) {
+      # return the errors
+      $errors = $validator->errors();
+
+      return response()->json(compact('errors'));
+    }
+    # okay, here we are. Now, just create the sub
+    $result = $this->categoryApi->addRecordsToCategory($category, $request->input('records', null));
+
+    return response()->json(['message' => 'New records has successfully created', $result]);
+  }
+
   public function show ($id)
   {
     $category = $this->categoryApi->getById($id);

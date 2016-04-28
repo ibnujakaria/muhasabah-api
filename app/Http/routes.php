@@ -22,6 +22,7 @@ Route::group(['prefix' => 'api'], function(){
     Route::post('/new', 'CategoryController@storeCategory');
     Route::delete('/{category}', 'CategoryController@destroy');
     Route::get('/{category}', 'CategoryController@show');
+    Route::post('/{category}/add-records', 'CategoryController@addRecords');
 
     Route::group(['prefix' => '{category}/sub-categories'], function(){
       Route::get('/', 'SubCategoryController@index');
