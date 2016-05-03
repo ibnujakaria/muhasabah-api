@@ -29,6 +29,7 @@ class AuthController extends Controller
   */
   public function authenticate(Request $request, GoogleJWTDecoder $googleJwtDecoder)
   {
+    /*
     $googleIdToken = $request->input('google-id-token');
 
     # check for the google id token whether its valid or not
@@ -50,6 +51,10 @@ class AuthController extends Controller
 
     # generate the new JWT token for this user (this is our own jwt, not belongs to google anymore)
     $token = \JWTAuth::fromUser($user);
+    */
+    # i disabled the google id login for this development, return the jwt directly
+    # whatever its be
+    $user = \App\User::first();
 
     return response()->json(compact('user', 'token'));
   }
