@@ -12,7 +12,10 @@ class UserTableSeeder extends Seeder
     public function run()
     {
       \DB::table('users')->truncate();
-      
+      \DB::table('categories')->truncate();
+      \DB::table('sub_categories')->truncate();
+      \DB::table('records')->truncate();
+
       $userApi = new \App\Api\UserApi();
       $userApi->newUser([
         'name'  =>  'Sample User 1',
