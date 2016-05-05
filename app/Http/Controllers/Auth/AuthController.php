@@ -50,11 +50,11 @@ class AuthController extends Controller
     }
 
     # generate the new JWT token for this user (this is our own jwt, not belongs to google anymore)
-    $token = \JWTAuth::fromUser($user);
     */
     # i disabled the google id login for this development, return the jwt directly
     # whatever its be
     $user = \App\User::first();
+    $token = \JWTAuth::fromUser($user);
 
     return response()->json(compact('user', 'token'));
   }
